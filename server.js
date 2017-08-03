@@ -4,6 +4,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+// ==============
+// Initial Config
+// ==============
 const app = express();
 const port = process.env.PORT || 4000;
 const server = http.createServer(app);
@@ -14,6 +17,7 @@ const server = http.createServer(app);
 const Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 const mongoosePromise = mongoose.connect('MONGO_URL', {useMongoClient: true});
+mongoosePromise.catch((reason) => {console.log(reason)});
 
 // =======
 // Schemas
@@ -32,6 +36,13 @@ const Users = mongoose.model('ads', usersSchema);
 app.use(bodyParser.json()); // Support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // Support encoded bodies
 
+// ===
+// API
+// ===
+app.get('/api', (req, res) => {
+  res.send('Welcome to the API');
+});
+
 // ===================
 // Production Settings
 // ===================
@@ -41,13 +52,6 @@ if(app.settings.env == 'production') {
     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
   });
 }
-
-// ===
-// API
-// ===
-app.get('/api', (req, res) => {
-  res.send('Welcome to the API');
-});
 
 // ======
 // Server
